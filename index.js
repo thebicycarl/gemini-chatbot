@@ -1,6 +1,7 @@
 // setup the .env file
 
 import dotenv from 'dotenv'
+import prompt from 'prompt-sync'
 
 dotenv.config()
 
@@ -16,13 +17,14 @@ const API_KEY = process.env.GOOGLE_AI_API_KEY
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // array to store conversation history
+
 let conversation_history = []
 
 async function run() {
     // For text-only input, use the gemini-pro model
     const model = genAI.getGenerativeModel({ model: "gemini-pro"});
   
-    const prompt = await getUserInput("Hello, how can I help?")
+    const prompt = await getUserInput()
   
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -31,8 +33,8 @@ async function run() {
   }
   
   
-  function getUserInput(message) {
-    let testInput = prompt(message)
+  function getUserInput() {
+    let testInput = prompt('message')
     return testInput
   }
 
