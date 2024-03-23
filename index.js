@@ -1,7 +1,8 @@
 // setup the .env file
 
 import dotenv from 'dotenv'
-import prompt from 'prompt-sync'
+import promptSync from 'prompt-sync'
+const promptUser = promptSync()
 
 dotenv.config()
 
@@ -34,7 +35,7 @@ async function run() {
   
   
   function getUserInput() {
-    let testInput = prompt('message')
+    let testInput = promptUser('What would you like to know: ')
     return testInput
   }
 
