@@ -20,13 +20,18 @@ const API_KEY = process.env.GOOGLE_AI_API_KEY
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Array to store conversation history
+let convo_history = [{
+  role: "user",
+  parts: [{ text: "" }],
+},
+{
+  role: "model",
+  parts: [{ text: "" }],
+}]
 
-async function run() {
+async function engageModel() {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" })
-
-  let convo_history = [
-  ]
-
+  
   const chat = model.startChat({
     history: convo_history,
     generationConfig: {
@@ -35,18 +40,28 @@ async function run() {
   })
 
   const msg = getUserInput()
+  if (!msg) { return }
 
   const result = await chat.sendMessage(msg)
   const response = await result.response
-  const text = response.text()
-  console.log(text)
+  const reply = response.text()
+  convo_history.push({
+    role: "user",
+    parts: [{text: msg}]
+  })
+  convo_history.push({
+    role: "model",
+    parts: [{text: reply}]
+  })
+  
+  console.log(reply)
+  engageModel()
+
 
 }
-
-run()
-
 
 function getUserInput() {
-  let user_input = promptUser('What would you like to know: ')
+  let user_input = promptUser('How can I help? ')
   return user_input
 }
+engageModel()
