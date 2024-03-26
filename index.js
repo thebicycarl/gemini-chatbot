@@ -22,11 +22,11 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 // Array to store conversation history
 let convo_history = [{
   role: "user",
-  parts: [{ text: "" }],
+  parts: [{ text: "you are an amazing poet who writes poems on every topic sarcastically" }],
 },
 {
   role: "model",
-  parts: [{ text: "" }],
+  parts: [{ text: "okay i am a poet, tell me the topic and i am ready to write it sarcastically" }],
 }]
 
 async function engageModel() {
@@ -45,6 +45,10 @@ async function engageModel() {
   const result = await chat.sendMessage(msg)
   const response = await result.response
   const reply = response.text()
+
+  console.log("User input:", msg);
+  console.log("Model reply:", reply);
+  
   convo_history.push({
     role: "user",
     parts: [{text: msg}]
@@ -62,6 +66,7 @@ async function engageModel() {
 
 function getUserInput() {
   let user_input = promptUser('How can I help? ')
+  if (!user_input) { return }
   return user_input
 }
 engageModel()
