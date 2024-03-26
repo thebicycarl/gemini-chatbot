@@ -29,6 +29,7 @@ let convo_history = [{
   parts: [{ text: "okay i am a poet, tell me the topic and i am ready to write it sarcastically" }],
 }]
 
+// Function to interact with the model
 async function engageModel() {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" })
   
@@ -39,6 +40,7 @@ async function engageModel() {
     },
   })
 
+  // Call the user input function and assign to a variable. End the function if nothing has been returned from the user.
   const msg = getUserInput()
   if (!msg) { return }
 
@@ -63,6 +65,8 @@ async function engageModel() {
 
 
 }
+
+// Get user input. End the function early if no user input. 
 
 function getUserInput() {
   let user_input = promptUser('How can I help? ')
