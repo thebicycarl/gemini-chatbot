@@ -1,5 +1,4 @@
 // setup the .env file
-
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -9,11 +8,9 @@ const promptUser = promptSync()
 
 
 // Import Google AI package
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Fetch API key
-
 const API_KEY = process.env.GOOGLE_AI_API_KEY
 
 // Create new instance of the Google AI
@@ -70,10 +67,11 @@ async function engageModel() {
 }
 
 // Get user input. End the function early if no user input. 
-
 function getUserInput() {
   let user_input = promptUser('How can I help? ')
   if (!user_input) { return }
   return user_input
 }
+
+// Call the main function
 engageModel()
