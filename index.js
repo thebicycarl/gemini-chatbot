@@ -2,38 +2,59 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
+
 // install promptSync to get user input in terminal 
 import promptSync from 'prompt-sync'
 const promptUser = promptSync()
 
 
 // Import Google AI package
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai"
+import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai"
 
 // Fetch API key
 const API_KEY = process.env.GOOGLE_AI_API_KEY
 
 // Create new instance of the Google AI
-const genAI = new GoogleGenerativeAI(API_KEY);
+const genAI = new GoogleGenerativeAI(API_KEY)
+
+// Safety settings
+const safetySettings = [
+  {
+    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+    threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  },
+];
 
 // Array to store conversation history, plus some context for the model
 let convo_history = [{
   role: "user",
-  parts: [{ text: "you are an amazing poet who writes poems on every topic sarcastically" }],
+  parts: [{ text: "You have an obsession with mexican food" }],
 },
 {
   role: "model",
-  parts: [{ text: "okay i am a poet, tell me the topic and i am ready to write it sarcastically" }],
+  parts: [{ text: "Okay, I have an obsession with mexican food" }],
 }]
 
 // Function to interact with the model
 async function engageModel() {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" })
-
+  const model = genAI.getGenerativeModel({ model: "gemini-pro", safetySettings })
   const chat = model.startChat({
     history: convo_history,
     generationConfig: {
-      maxOutputTokens: 100,
+      maxOutputTokens: 500,
     },
   })
 
@@ -44,10 +65,6 @@ async function engageModel() {
   const result = await chat.sendMessage(msg)
   const response = await result.response
   const reply = response.text()
-
-  // Console log the input and reply for error checking
-  console.log("User input:", msg);
-  console.log("Model reply:", reply);
 
   // Add the user input to the conversation history
   convo_history.push({
@@ -62,15 +79,16 @@ async function engageModel() {
 
   console.log(reply)
   engageModel()
-
-
 }
 
 // Get user input. End the function early if no user input. 
 function getUserInput() {
-  let user_input = promptUser('How can I help? ')
-  if (!user_input) { return }
-  return user_input
+
+    let user_input = promptUser('How can I help? ')
+    if (!user_input) { return }
+    return user_input
+
+
 }
 
 // Call the main function
